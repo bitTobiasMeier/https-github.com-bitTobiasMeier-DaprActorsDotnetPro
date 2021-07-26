@@ -15,8 +15,8 @@ namespace OrderActor
     {
         private static readonly string CustomerDataStateName = "Customerdata";
         private static readonly string CustomerOrderIdStateName = "CustomerOrderIdState";
-        public CustomerActor(ActorService actorService, ActorId actorId)
-            : base(actorService, actorId)
+        public CustomerActor(ActorHost actorHost)
+            : base(actorHost)
         {
         }
 
@@ -45,7 +45,7 @@ namespace OrderActor
         {
             try
             {
-                var lastOrderId = await this.GetLastOrderIdAsync();
+                var lastOrderId = await this.GetLastOrderIdAsync();             
                 var orderId = lastOrderId + 1;
                 var orderactorId = new ActorId("o" + this.Id + $"_{orderId}");
                 var orderproxy = ActorProxy.Create<IOrderActor>(orderactorId, "OrderActor");
@@ -54,8 +54,8 @@ namespace OrderActor
                 return orderId;
             }
             catch (Exception ex)
-            {
-                Console.WriteLine($"Exception during PlaceOrderAsync: {ex.Message}. Stacktrace: {ex.StackTrace}");
+            {                
+                Console.WriteLine($"Exception during PlaceOrderAsync: {ex.Message}. Stacktrace: {ex.StackTrace}");                
                 throw;
             }
         }
