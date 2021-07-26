@@ -16,8 +16,8 @@ namespace OrderActor
         private static readonly string CookingStateName = "CookingState";
         private static readonly string CookingReminder = "CookingReminder";
 
-        public OrderActor(ActorService actorService, ActorId actorId)
-            : base(actorService, actorId)
+        public OrderActor(ActorHost actorHost)
+            : base(actorHost)
         {
         }
 

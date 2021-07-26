@@ -13,21 +13,18 @@ namespace OrderClient
 {
     class Program
     {
-        private static readonly string OrderActorType = "OrderActor";
+        private static readonly string CustomerActorType = "CustomerActor";
         static async System.Threading.Tasks.Task Main(string[] args)
         {
             WriteSuccess("Willkommen bei Dapr Pizza!");
             string customerId = GetInput("Bitte geben Sie ihre BenutzerId ein : ");
 
             var customerActorId = new ActorId(customerId);
-            var customerProxy = ActorProxy.Create<ICustomerActor>(customerActorId, "CustomerActor");
+            var customerProxy = ActorProxy.Create<ICustomerActor>(customerActorId, CustomerActorType);
             var customerdata = await customerProxy.GetDataAsync();
             if (customerdata == null || string.IsNullOrEmpty(customerdata.Name))
             {
-                if (customerdata == null)
-                {
-                    customerdata = new CustomerData();
-                }
+                customerdata ??= new CustomerData();
                 Console.Write("Customername: ");
                 var customername = Console.ReadLine();
                 customerdata.Name = customername;
@@ -155,7 +152,7 @@ namespace OrderClient
                 Price = price
             };
             Console.WriteLine("Auftrag wird aufgegeben ....");
-            var orderId = await customerProxy.PlaceOrderAsync(data);
+            var orderId = await customerProxy.PlaceOrderAsync(data).ConfigureAwait(true);
             WriteSuccess($"Vielen Dank. Der Auftrag mit der Id {orderId} wurde aufgegeben.");
             Console.WriteLine("Aktueller Status:");
             var ordered = await customerProxy.GetOrderDataAsync(orderId);
